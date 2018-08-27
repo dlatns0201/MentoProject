@@ -24,8 +24,8 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
-    public String my_id="bbb"; // aaa: device bbb:AVL
-    public String opp_id="aaa"; // AVL
+    public String my_id="aaa"; // aaa: device bbb:AVL
+    public String opp_id="bbb"; // AVL
     Button send;
     Button backButton;
     Button loadButton;
@@ -126,6 +126,12 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             adapter.addItem(new ChatItem(n, m));
                             listView.setAdapter(adapter);
+                            listView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    listView.setSelection(listView.getAdapter().getCount()-1);
+                                }
+                            });
                         }
                     });
                 }
@@ -152,6 +158,12 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             adapter.addItem(new ChatItem(n, m));
                             listView.setAdapter(adapter);
+                            listView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    listView.setSelection(listView.getAdapter().getCount()-1);
+                                }
+                            });
                         }
                     });
                 }
