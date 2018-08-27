@@ -30,17 +30,17 @@ io.sockets.on('connection', function (socket) {
     socket.on('loadChat', function (data) {
         chat.find(function (err, result) {
             if (result.length > 0) {
-                var object;
+                var object
                 for (var i = 0; i < result[0].message.length; i++) {
-                    if (connect[result[0].sender_id[i]] == socket.id) {
-                        object[i] = { "name": "나", "message": result[0].message[i] };
+                    if (result[0].sender_id[i] == data.my_id) {
+                        object = { "name": "나", "message": result[0].message[i] };
+                        socket.emit('loadChat',object);
                     }
                     else {
-                        object[i] = { "name": data.opp_id, "message": result[0].message[i] };
+                        object = { "name": data.opp_id, "message": result[0].message[i] };
+                        socket.emit('loadChat',object);
                     }
                 }
-                console.log(object);
-                socket.emit('loadChat', object);
             }
         }).or([{ "room_number": data.my_id + ":" + data.opp_id }, { "room_number": data.opp_id + ":" + data.my_id }]);
     });

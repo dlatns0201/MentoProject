@@ -3,6 +3,7 @@ package com.example.dlatn.socket;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mSocket.on("message", onNewMessage);
+        mSocket.on("loadChat",onAllMessage);
         mSocket.connect();
         send = (Button) findViewById(R.id.send);
         backButton=(Button)findViewById(R.id.back_button);
@@ -125,6 +128,32 @@ public class MainActivity extends AppCompatActivity {
                             listView.setAdapter(adapter);
                         }
                     });
+                }
+            });
+        }
+    };
+    private Emitter.Listener onAllMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    String data = args[0].toString();
+                    Log.d("test",data);
+//                    try {
+//                        for(int i=0; i<data.length();i++){ ;
+//                            final String name=data..getString("name");
+//                            final String message=order.getString("message");
+//                            Log.d("test",name);
+//                            handler.post(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    adapter.addItem(new ChatItem(name, message));
+//                                    listView.setAdapter(adapter);
+//                                }
+//                            });
+//                        }
+//                    }catch(Exception e){}
                 }
             });
         }
