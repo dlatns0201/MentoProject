@@ -22,8 +22,8 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
-    public String my_id="aaa"; // aaa: device bbb:AVL
-    public String opp_id="bbb"; // AVL
+    public String my_id="bbb"; // aaa: device bbb:AVL
+    public String opp_id="aaa"; // AVL
     Button send;
     Button backButton;
     TextView opp_textView;

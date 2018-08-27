@@ -12,6 +12,9 @@ var ChatSchema=mongoose.Schema({
     date:[{type:Date,"default":Date.now()}]
 });
 var chat=mongoose.model('chat',ChatSchema);
+var Dburl="mongodb://localhost:27017/local";
+mongoose.connect(Dburl);
+var database=mongoose.connection();
 
 var connect={};
 var server=http.createServer(app).listen(3000,function(){
