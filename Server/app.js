@@ -36,13 +36,13 @@ io.sockets.on('connection', function (socket) {
                         object[i] = { "name": "나", "message": result[0].message[i] };
                     }
                     else {
-                        object[i] = { "name": data.listener_id, "message": result[0].message[i] };
+                        object[i] = { "name": data.opp_id, "message": result[0].message[i] };
                     }
                 }
                 console.log(object);
                 socket.emit('loadChat', object);
             }
-        }).or([{ "room_number": data.sender_id + ":" + data.listener_id }, { "room_number": data.listener_id + ":" + data.sender_id }]);
+        }).or([{ "room_number": data.my_id + ":" + data.opp_id }, { "room_number": data.opp_id + ":" + data.my_id }]);
     });
     socket.on('message', function (data) {
         chat.find(function (err, result) {
