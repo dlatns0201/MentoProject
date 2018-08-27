@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     public String opp_id="aaa"; // AVL
     Button send;
     Button backButton;
+    Button loadButton;
     TextView opp_textView;
     EditText editText;
     ListView listView;
@@ -49,13 +50,24 @@ public class MainActivity extends AppCompatActivity {
         mSocket.connect();
         send = (Button) findViewById(R.id.send);
         backButton=(Button)findViewById(R.id.back_button);
+        loadButton=(Button)findViewById(R.id.load);
         opp_textView=(TextView) findViewById(R.id.opp_textView);
         editText = (EditText) findViewById(R.id.editText);
         listView=(ListView)findViewById(R.id.listView);
         listView.setAdapter(adapter);
         opp_textView.setText(opp_id);
 
-
+        loadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONObject object=new JSONObject();
+                try{
+                    object.accumulate("my_id",my_id);
+                    object.accumulate("opp_id",opp_id);
+                    mSocket.emit("loadChat",object);
+                }catch(Exception e){}
+            }
+        });
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
