@@ -28,7 +28,7 @@ io.sockets.on('connection', function (socket) {
         console.log(socket.id);
     });
     socket.on('loadChat', function (data) {
-        chat.find().or([{ "room_number": data.sender_id + ":" + data.listener_id }, { "room_number": data.listener_id + ":" + data.sender_id }], function (err, result) {
+        chat.find(function (err, result) {
             if (result.length > 0) {
                 var object;
                 for (var i = 0; i < result[0].message.length; i++) {
@@ -39,9 +39,10 @@ io.sockets.on('connection', function (socket) {
                         object[i] = { "name": data.listener_id, "message": result[0].message[i] };
                     }
                 }
+                console.log(object);
                 socket.emit('loadChat', object);
             }
-        });
+        }).or([{ "room_number": data.sender_id + ":" + data.listener_id }, { "room_number": data.listener_id + ":" + data.sender_id }]);
     });
     socket.on('message', function (data) {
         chat.find(function (err, result) {
