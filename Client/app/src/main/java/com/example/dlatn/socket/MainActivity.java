@@ -24,8 +24,8 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
-    public String my_id="aaa"; // aaa: device bbb:AVL
-    public String opp_id="bbb"; // AVL
+    public String my_id="bbb"; // aaa: device bbb:AVL
+    public String opp_id="aaa"; // AVL
     Button send;
     Button backButton;
     Button loadButton;
@@ -138,22 +138,22 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    String data = args[0].toString();
-                    Log.d("test",data);
-//                    try {
-//                        for(int i=0; i<data.length();i++){ ;
-//                            final String name=data..getString("name");
-//                            final String message=order.getString("message");
-//                            Log.d("test",name);
-//                            handler.post(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    adapter.addItem(new ChatItem(name, message));
-//                                    listView.setAdapter(adapter);
-//                                }
-//                            });
-//                        }
-//                    }catch(Exception e){}
+                    JSONObject data = (JSONObject) args[0];
+                    String name="";
+                    String message="";
+                    try {
+                        message = data.getString("message");
+                        name=data.getString("name");
+                    }catch(Exception e){}
+                    final String n=name;
+                    final String m=message;
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.addItem(new ChatItem(n, m));
+                            listView.setAdapter(adapter);
+                        }
+                    });
                 }
             });
         }
