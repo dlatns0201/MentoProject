@@ -32,7 +32,18 @@ io.sockets.on('connection',function(socket){
     });
     socket.on('message',function(data){
         chat.findOne({"room_number":data.sender_id+":"+data.listener_id || data.listener_id+":"+data.sender_id},function(err,result){
-            console.log('hihi');
+            if(result){
+                var sender=result.sender_id;
+                sender[sender.length]=data.sender_id;
+                var listener=result.listener_id;
+                listener[listener.length]=data.listener_id;
+                var message=result.message;
+                message[message.length]=data.message;
+                console.log(result.room_number);
+                chat.where({"room_number":result.room_number}).update({"sender_id":sender,"listener_id":listener,"message":message},function(){});
+            }else{
+                console.log("방이 없음");
+            }
         });
         io.to(connect[data.sender_id]).emit('message',{name:"나",message:data.message});
         io.to(connect[data.listener_id]).emit('message',{name:data.sender_id, message:data.message});
