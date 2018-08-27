@@ -1,6 +1,7 @@
 var http=require('http');
 var express=require('express');
 var mongoose=require('mongoose');
+var mongoose=require('mongoose');
 var app=express();
 var socketio=require('socket.io');
 
@@ -30,9 +31,9 @@ io.sockets.on('connection',function(socket){
         console.log(socket.id);
     });
     socket.on('message',function(data){
-        if(chat.where({"room_number":data.sender_id+":"+data.listener_id|| data.listener_id+":"+data.sender_id})){
+        chat.findOne({"room_number":data.sender_id+":"+data.listener_id || data.listener_id+":"+data.sender_id},function(err,result){
             console.log('hihi');
-        };
+        });
         io.to(connect[data.sender_id]).emit('message',{name:"나",message:data.message});
         io.to(connect[data.listener_id]).emit('message',{name:data.sender_id, message:data.message});
     });
