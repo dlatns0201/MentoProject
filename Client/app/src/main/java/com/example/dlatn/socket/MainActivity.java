@@ -12,8 +12,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     ChatAdapter adapter=new ChatAdapter();
     Handler handler = new Handler();
-    private com.github.nkzawa.socketio.client.Socket mSocket;
+    com.github.nkzawa.socketio.client.Socket mSocket;
     {
         try {
             mSocket = IO.socket("http://13.209.43.170:3000");
@@ -48,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mSocket.on(Socket.EVENT_CONNECT,onConnect);
         mSocket.on("message", onNewMessage);
         mSocket.on("loadChat",onAllMessage);
         mSocket.connect();
@@ -59,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         listView=(ListView)findViewById(R.id.listView);
         listView.setAdapter(adapter);
         opp_textView.setText(opp_id);
+
 
         loadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +111,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private Emitter.Listener onConnect=new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            mSocket.connect();
+            mSocket.emit("socket_id",my_id);
+        }
+    };
 
     private Emitter.Listener onNewMessage = new Emitter.Listener() {
         @Override
