@@ -8,7 +8,7 @@ var ChatSchema = mongoose.Schema({
     sender_id: [{ type: String }],
     listener_id: [{ type: String }],
     message: [{ type: String }],
-    date: [{ type: Date, "default": Date.now() }]
+    date: [{ type: Date}]
 });
 var chat = mongoose.model('chat', ChatSchema);
 var Dburl = "mongodb://localhost:27017/local";
@@ -53,9 +53,9 @@ io.sockets.on('connection', function (socket) {
                 listener[listener.length] = data.listener_id;
                 var message = result[0].message;
                 message[message.length] = data.message;
-                console.log(result[0].room_number);
-                console.log(result);
-                chat.where({ "room_number": result[0].room_number }).update({ "sender_id": sender, "listener_id": listener, "message": message }, function () { });
+                var date=result[0].date;
+                date[date.length]=Date.now();
+                chat.where({ "room_number": result[0].room_number }).update({ "sender_id": sender, "listener_id": listener, "message": message,"date":date }, function () { });
             } else {
                 console.log("방이 없음");
             }
