@@ -147,31 +147,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-    /*class ClientThread extends Thread{
-        public void run(){
-            int port=3000;
-            String host="localhost";
-            /*
-            try {
-                Socket socket = new Socket(host, port);
-                ObjectOutputStream outstream=new ObjectOutputStream(socket.getOutputStream());
-                outstream.writeObject("안녕!");
-                outstream.flush();
-                Log.d("ClientThread","서버로 보냄.");
-
-                ObjectInputStream instream=new ObjectInputStream(socket.getInputStream());
-                final Object input=instream.readObject();
-                Log.d("ClientThread","받은 데이터: "+input);
-
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        textView.setText("받은 데이터2: "+input);
-                    }
-                });
-
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-        }
-    }*/
