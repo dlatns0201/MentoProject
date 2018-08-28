@@ -29,7 +29,10 @@ io.sockets.on('connection', function (socket) {
         console.log(socket.id);
     });
     socket.on('loadChat', function (data) {
-        chat.find({ "room_number": data }, function (err, result) {
+        var splitted=data.split(':');
+        var user1=splitted[0];
+        var user2=splitted[1];
+        chat.find(function (err, result) {
             if (result.length > 0) {
                 var object
                 for (var i = 0; i < result[0].message.length; i++) {
@@ -42,8 +45,15 @@ io.sockets.on('connection', function (socket) {
                         socket.emit('message', object);
                     }
                 }
+            }else{
+                var new_chat=new chat({
+                    "room_number":data
+                });
+                new_chat.save(function(err){
+                    console.log(data+" 방 생성 완료");
+                });
             }
-        });
+        }).or([{ "room_number": user1+ ":" + user2 }, { "room_number": user2 + ":" + user1 }]);
     });
     socket.on('message', function (data) {
         chat.find(function (err, result) {
