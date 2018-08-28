@@ -43,8 +43,6 @@ public class chatting extends AppCompatActivity {
         try {
             mSocket = IO.socket("http://13.209.43.170:3000");
             mSocket.emit("socket_id",my_id);
-            mSocket.emit("loadChat",my_id+":"+opp_id);
-            mSocket.emit("loadChat",opp_id+":"+my_id);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -58,9 +56,10 @@ public class chatting extends AppCompatActivity {
 
 
         mSocket.on(Socket.EVENT_CONNECT,onConnect);
-        mSocket.on("loadChat", onAllMessage);
         mSocket.on("message", onNewMessage);
         mSocket.connect();
+        mSocket.emit("loadChat",my_id+":"+opp_id);
+        mSocket.emit("loadChat",opp_id+":"+my_id);
 
         backButton=(Button)findViewById(R.id.back_button);
         send=(Button)findViewById(R.id.send);
@@ -156,6 +155,9 @@ public class chatting extends AppCompatActivity {
                     try {
                         message = data.getString("message");
                         name=data.getString("name");
+                        if(name.equals("상대")){
+                            name=opp_id;
+                        }
                     }catch(Exception e){}
                     final String n=name;
                     final String m=message;
@@ -164,7 +166,6 @@ public class chatting extends AppCompatActivity {
                         public void run() {
                             adapter.addItem(new ChatItem(n, m));
                             listView.setAdapter(adapter);
-                            Toast.makeText(getApplicationContext(),n,Toast.LENGTH_SHORT).show();
                                 listView.post(new Runnable() {
                                     @Override
                                     public void run() {
@@ -177,39 +178,5 @@ public class chatting extends AppCompatActivity {
             });
         }
     };
-    private Emitter.Listener onAllMessage = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    String name="";
-                    String message="";
-                    try {
-                        message = data.getString("message");
-                        name=data.getString("name");
-                    }catch(Exception e){}
-                    final String n=name;
-                    final String m=message;
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapter.addItem(new ChatItem(n, m));
-                            listView.setAdapter(adapter);
-                            Toast.makeText(getApplicationContext(),"hi",Toast.LENGTH_LONG).show();
-                            listView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    listView.setSelection(listView.getAdapter().getCount()-1);
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        }
-    };
-
 }
 
