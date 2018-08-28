@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,8 +33,8 @@ public class one_profile extends AppCompatActivity {
     TextView profile_saying;
     TextView profile_major;
     ImageView image_select;
-    Button btn_back;
-    Button btn_loving;
+    ImageButton btn_back;
+    ImageButton btn_loving;
     Intent intent;
     String show_id;
     String likeType;
@@ -56,8 +57,8 @@ public class one_profile extends AppCompatActivity {
         profile_saying = (TextView)findViewById(R.id.profile_saying);
         profile_major = (TextView)findViewById(R.id.profile_major);
         image_select = (ImageView)findViewById(R.id.image_select);
-        btn_back = (Button)findViewById(R.id.btn_back);
-        btn_loving = (Button)findViewById(R.id.btn_loving);
+        btn_back = (ImageButton)findViewById(R.id.btn_back);
+        btn_loving = (ImageButton)findViewById(R.id.btn_loving);
 
         btn_back.setOnClickListener(new View.OnClickListener(){
             @Override

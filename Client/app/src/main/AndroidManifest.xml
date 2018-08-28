@@ -45,6 +45,8 @@
         <activity android:name=".setting" />
         <activity android:name=".profiles2" />
         <activity android:name=".one_profile" />
+        <activity android:name=".maker"/>
+        <activity android:name=".qna"/>
         <activity android:name=".chatting"></activity>
     </application>
 

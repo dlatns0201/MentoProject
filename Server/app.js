@@ -301,7 +301,7 @@ app.post('/numberSetting', function(req, res){
       result['user_mentee'] = user_mentee;
       res.json(result);
       */
-      res.send('{"mentor":' + rawContent.user_mentor + ',' + '" mentee":' + rawContent.user_mentee + '}');
+      res.send('{"mentor":' + rawContent.user_mentor + ',' + '"mentee":' + rawContent.user_mentee + '}');
       //res.send('{"mentor":-1, "mentee":-1}');
     }
     res.end();
@@ -385,8 +385,8 @@ app.post('/likeYou2', function(req, res){
   var loving_id = req.body.loving_id;
   var save_user_matched;
   var save_user_matched2;
-  console.log('loving_id: ' + req.body.loving_id);
-  console.log('loved_id: ' + req.body.loved_id);
+  console.log('loving_id: ' + req.body.loving_id); // 좋아요한 사람->멘티
+  console.log('loved_id: ' + req.body.loved_id); // 좋아요 받은 사람 -> 멘토
 
   User.findOne({user_id:loved_id}, function(err, rawContent){
     if (err) {

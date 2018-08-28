@@ -50,7 +50,6 @@ public class profiles2 extends AppCompatActivity {
         btn_chatting = (ImageButton)findViewById(R.id.btn_chatting);
         btn_profiles = (ImageButton)findViewById(R.id.btn_profiles);
         btn_setting = (ImageButton)findViewById(R.id.btn_setting);
-        btn_board = (ImageButton)findViewById(R.id.btn_board);
 
         btn_all = (ImageButton)findViewById(R.id.btn_all);
         btn_loving = (ImageButton)findViewById(R.id.btn_loving);
@@ -120,14 +119,6 @@ public class profiles2 extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent_chattingList = new Intent(profiles2.this, chattingList.class);
                 startActivity(intent_chattingList);
-                finish();
-            }
-        });
-        btn_board.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent_board = new Intent(profiles2.this, board.class);
-                startActivity(intent_board);
                 finish();
             }
         });

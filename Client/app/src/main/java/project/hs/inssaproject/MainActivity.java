@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         btn_chatting = (ImageButton)findViewById(R.id.btn_chatting);
         btn_profiles = (ImageButton)findViewById(R.id.btn_profiles);
         btn_setting = (ImageButton)findViewById(R.id.btn_setting);
-        btn_board = (ImageButton)findViewById(R.id.btn_board);
 
         //new JSONTask().execute("http://54.180.32.249:3000/main");
         numberSetting();
@@ -67,14 +66,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent_chattingList = new Intent(MainActivity.this, chattingList.class);
                 startActivity(intent_chattingList);
-                finish();
-            }
-        });
-        btn_board.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent_board = new Intent(MainActivity.this, board.class);
-                startActivity(intent_board);
                 finish();
             }
         });
