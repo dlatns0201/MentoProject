@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
@@ -27,7 +30,6 @@ public class chatting extends AppCompatActivity {
     //자신의 아이디 : MainActivity.user_id
     public String my_id=MainActivity.user_id;
     public String opp_id;
-
     Button backButton;
     Button send;
     EditText editText;
@@ -41,7 +43,9 @@ public class chatting extends AppCompatActivity {
         try {
             mSocket = IO.socket("http://13.209.43.170:3000");
             mSocket.emit("socket_id",my_id);
-        } catch (URISyntaxException e) {
+            mSocket.emit("loadChat",my_id+":"+opp_id);
+            mSocket.emit("loadChat",opp_id+":"+my_id);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -52,15 +56,9 @@ public class chatting extends AppCompatActivity {
         Intent intent = getIntent();
         opp_id = intent.getStringExtra("profile_id"); //상대방의 아이디
 
-        JSONObject object=new JSONObject();
-        try{
-            object.accumulate("my_id",my_id);
-            object.accumulate("opp_id",opp_id);
-            mSocket.emit("loadChat",object);
-        }catch (Exception e){}
 
         mSocket.on(Socket.EVENT_CONNECT,onConnect);
-        mSocket.on("loadChat",onAllMessage);
+        mSocket.on("loadChat", onAllMessage);
         mSocket.on("message", onNewMessage);
         mSocket.connect();
 
@@ -166,12 +164,13 @@ public class chatting extends AppCompatActivity {
                         public void run() {
                             adapter.addItem(new ChatItem(n, m));
                             listView.setAdapter(adapter);
-                            listView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    listView.setSelection(listView.getAdapter().getCount()-1);
-                                }
-                            });
+                            Toast.makeText(getApplicationContext(),n,Toast.LENGTH_SHORT).show();
+                                listView.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        listView.setSelection(listView.getAdapter().getCount() - 1);
+                                    }
+                                });
                         }
                     });
                 }
@@ -198,6 +197,7 @@ public class chatting extends AppCompatActivity {
                         public void run() {
                             adapter.addItem(new ChatItem(n, m));
                             listView.setAdapter(adapter);
+                            Toast.makeText(getApplicationContext(),"hi",Toast.LENGTH_LONG).show();
                             listView.post(new Runnable() {
                                 @Override
                                 public void run() {

@@ -8,7 +8,7 @@ var ChatSchema = mongoose.Schema({
     sender_id: [{ type: String }],
     listener_id: [{ type: String }],
     message: [{ type: String }],
-    date: [{ type: Date}]
+    date: [{ type: Date }]
 });
 var chat = mongoose.model('chat', ChatSchema);
 var Dburl = "mongodb://localhost:27017/local";
@@ -25,24 +25,25 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('socket_id', function (data) {
         connect[data] = socket.id;
+        socket.user_id=data;
         console.log(socket.id);
     });
     socket.on('loadChat', function (data) {
-        chat.find(function (err, result) {
+        chat.find({ "room_number": data }, function (err, result) {
             if (result.length > 0) {
                 var object
                 for (var i = 0; i < result[0].message.length; i++) {
-                    if (result[0].sender_id[i] == data.my_id) {
+                    if (result[0].sender_id[i] == socket.user_id) {
                         object = { "name": "나", "message": result[0].message[i] };
-                        socket.emit('loadChat',object);
+                        socket.emit('message', object);
                     }
                     else {
-                        object = { "name": data.opp_id, "message": result[0].message[i] };
-                        socket.emit('loadChat',object);
+                        object = { "name": "상대", "message": result[0].message[i] };
+                        socket.emit('message', object);
                     }
                 }
             }
-        }).or([{ "room_number": data.my_id + ":" + data.opp_id }, { "room_number": data.opp_id + ":" + data.my_id }]);
+        });
     });
     socket.on('message', function (data) {
         chat.find(function (err, result) {
@@ -53,9 +54,9 @@ io.sockets.on('connection', function (socket) {
                 listener[listener.length] = data.listener_id;
                 var message = result[0].message;
                 message[message.length] = data.message;
-                var date=result[0].date;
-                date[date.length]=Date.now();
-                chat.where({ "room_number": result[0].room_number }).update({ "sender_id": sender, "listener_id": listener, "message": message,"date":date }, function () { });
+                var date = result[0].date;
+                date[date.length] = Date.now();
+                chat.where({ "room_number": result[0].room_number }).update({ "sender_id": sender, "listener_id": listener, "message": message, "date": date }, function () { });
             } else {
                 console.log("방이 없음");
             }
