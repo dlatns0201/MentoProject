@@ -52,7 +52,15 @@ public class chatting extends AppCompatActivity {
         Intent intent = getIntent();
         opp_id = intent.getStringExtra("profile_id"); //상대방의 아이디
 
+        JSONObject object=new JSONObject();
+        try{
+            object.accumulate("my_id",my_id);
+            object.accumulate("opp_id",opp_id);
+            mSocket.emit("loadChat",object);
+        }catch (Exception e){}
+
         mSocket.on(Socket.EVENT_CONNECT,onConnect);
+        mSocket.on("loadChat",onAllMessage);
         mSocket.on("message", onNewMessage);
         mSocket.connect();
 
@@ -94,8 +102,7 @@ public class chatting extends AppCompatActivity {
         });
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                onBackPressed();
+            public void onClick(View v) { finish();
             }
         });
     }
@@ -140,6 +147,38 @@ public class chatting extends AppCompatActivity {
     };
 
     private Emitter.Listener onNewMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    String name="";
+                    String message="";
+                    try {
+                        message = data.getString("message");
+                        name=data.getString("name");
+                    }catch(Exception e){}
+                    final String n=name;
+                    final String m=message;
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.addItem(new ChatItem(n, m));
+                            listView.setAdapter(adapter);
+                            listView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    listView.setSelection(listView.getAdapter().getCount()-1);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    };
+    private Emitter.Listener onAllMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             runOnUiThread(new Runnable() {
