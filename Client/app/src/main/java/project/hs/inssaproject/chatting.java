@@ -55,7 +55,6 @@ public class chatting extends AppCompatActivity {
         mSocket.on("message", onNewMessage);
         mSocket.connect();
         mSocket.emit("loadChat",my_id+":"+opp_id);
-        mSocket.emit("loadChat",opp_id+":"+my_id);
 
         backButton=(Button)findViewById(R.id.back_button);
         send=(Button)findViewById(R.id.send);
