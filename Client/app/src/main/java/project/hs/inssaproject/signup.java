@@ -20,6 +20,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -90,6 +91,8 @@ public class signup extends AppCompatActivity {
         signup_major = (Spinner)findViewById(R.id.major);
         signup_sex = (RadioGroup)findViewById(R.id.signup_sex);
         signup_grade = (Spinner)findViewById(R.id.grade);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         signup_grade.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

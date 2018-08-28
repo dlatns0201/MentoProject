@@ -1,10 +1,9 @@
 package project.hs.inssaproject;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +13,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 public class chatting extends AppCompatActivity {
@@ -41,7 +37,7 @@ public class chatting extends AppCompatActivity {
     com.github.nkzawa.socketio.client.Socket mSocket;
     {
         try {
-            mSocket = IO.socket("http://13.209.43.170:3000");
+            mSocket = IO.socket("http://54.180.32.249:3000");
             mSocket.emit("socket_id",my_id);
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,12 +95,15 @@ public class chatting extends AppCompatActivity {
         });
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { finish();
+            public void onClick(View v) {
+                Intent intent_chatList = new Intent(chatting.this, chattingList.class);
+                startActivity(intent_chatList);
+                finish();
             }
         });
     }
 
-    class ChatAdapter extends BaseAdapter{
+    class ChatAdapter extends BaseAdapter {
         ArrayList<ChatItem> items=new ArrayList<ChatItem>();
         public void addItem(ChatItem item){
             items.add(item);
@@ -166,17 +165,24 @@ public class chatting extends AppCompatActivity {
                         public void run() {
                             adapter.addItem(new ChatItem(n, m));
                             listView.setAdapter(adapter);
-                                listView.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        listView.setSelection(listView.getAdapter().getCount() - 1);
-                                    }
-                                });
+                            listView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    listView.setSelection(listView.getAdapter().getCount() - 1);
+                                }
+                            });
                         }
                     });
                 }
             });
         }
     };
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent intent_chatList = new Intent(chatting.this, chattingList.class);
+            startActivity(intent_chatList);
+            finish();
+        }
+        return true;
+    }
 }
-

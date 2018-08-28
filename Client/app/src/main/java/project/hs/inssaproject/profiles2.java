@@ -36,6 +36,8 @@ public class profiles2 extends AppCompatActivity {
     ListView allListView2 = null;
     ListViewAdapter allListViewAdapter2 = null;
     List userIDs;
+    String matchedList;
+    String lovedList;
 
     //ImageView imgView;
     Bitmap bm;
@@ -55,8 +57,10 @@ public class profiles2 extends AppCompatActivity {
         allListView2 = (ListView)findViewById(R.id.allListView2);
 
         userIDs = new ArrayList();
-
-        setAllList();
+        getLM();
+        //allListViewAdapter2.dataChange();
+        //setAllList();
+        //allListViewAdapter2.dataChange();
         //allListViewAdapter2 = new ListViewAdapter(this);
         /*
         for(int i = 0; i < userIDs.size(); i++){
@@ -166,12 +170,12 @@ public class profiles2 extends AppCompatActivity {
             public void onResponse(Call<Res_string> call, Response<Res_string> response) {
                 if(response.isSuccessful()){
                     if(response.body() != null) {
+                        //getLM();
                         Log.d("####response.body2()###", "여길봐2");
                         Log.d("response.body()2", response.body().toString());
                         String userList = response.body().getList_id();
                         Log.d("userList", userList);
                         StringTokenizer recordToken = new StringTokenizer(userList, "$");
-
                         while(recordToken.hasMoreTokens()){
                             String temp_id = recordToken.nextToken();
                             userIDs.add(temp_id);
@@ -208,12 +212,25 @@ public class profiles2 extends AppCompatActivity {
                         Log.d("####response.body()3###", "여길봐3");
                         Log.d("response.body()3", response.body().toString());
                         User user = response.body();
-                        allListViewAdapter2.addItem(user.getUser_id(), user.getUser_major(), user.getUser_grade(), user.getUser_age());
-                        allListViewAdapter2.dataChange();
-                        Log.d("getUser_id()", user.getUser_id());
-                        Log.d("getUser_major()", user.getUser_major());
-                        Log.d("getUser_age()", Integer.toString(user.getUser_age()));
-                        Log.d("getUser_grade()", Integer.toString(user.getUser_grade()));
+
+                        boolean isGood = true;
+                        if(matchedList != null) {
+                            StringTokenizer recordToken1 = new StringTokenizer(matchedList, "$");
+                            while (recordToken1.hasMoreTokens()) {
+                                String temp_id = recordToken1.nextToken();
+                                if (temp_id.equals(user.getUser_id())) {
+                                    isGood = false;
+                                }
+                            }
+                        }
+                        if(isGood) {
+                            allListViewAdapter2.addItem(user.getUser_id(), user.getUser_major(), user.getUser_grade(), user.getUser_age());
+                            allListViewAdapter2.dataChange();
+                            Log.d("getUser_id()", user.getUser_id());
+                            Log.d("getUser_major()", user.getUser_major());
+                            Log.d("getUser_age()", Integer.toString(user.getUser_age()));
+                            Log.d("getUser_grade()", Integer.toString(user.getUser_grade()));
+                        }
                     }
                 }
             }
@@ -294,6 +311,39 @@ public class profiles2 extends AppCompatActivity {
                     finish();
                 }
             });
+            holder.profile_major.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    Intent intent_one_profile = new Intent(profiles2.this, one_profile.class);
+                    intent_one_profile.putExtra("profile_id", tmp_id);
+                    intent_one_profile.putExtra("type", "loved");
+                    Log.d("profile_id", holder.profile_id.getText().toString());
+                    startActivity(intent_one_profile);
+                    finish();
+                }
+            });
+            holder.profile_grade.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    Intent intent_one_profile = new Intent(profiles2.this, one_profile.class);
+                    intent_one_profile.putExtra("profile_id", tmp_id);
+                    intent_one_profile.putExtra("type", "loved");
+                    Log.d("profile_id", holder.profile_id.getText().toString());
+                    startActivity(intent_one_profile);
+                    finish();
+                }
+            });
+            holder.profile_age.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    Intent intent_one_profile = new Intent(profiles2.this, one_profile.class);
+                    intent_one_profile.putExtra("profile_id", tmp_id);
+                    intent_one_profile.putExtra("type", "loved");
+                    Log.d("profile_id", holder.profile_id.getText().toString());
+                    startActivity(intent_one_profile);
+                    finish();
+                }
+            });
 
             return convertView;
         }
@@ -325,7 +375,36 @@ public class profiles2 extends AppCompatActivity {
     }
 
     ////////
-
+    private void getLM(){
+        Retrofit retrofit =new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(ApiService.BASEURL)
+                .build();
+        ApiService apiService = retrofit.create(ApiService.class);
+        Req_number req_number = new Req_number(MainActivity.user_id);
+        Call<Res_lm> res = apiService.getlm(req_number);
+        res.enqueue(new Callback<Res_lm>() {
+            @Override
+            public void onResponse(Call<Res_lm> call, Response<Res_lm> response) {
+                if(response.isSuccessful()){
+                    if(response.body() != null) {
+                        Log.d("response.body()", response.body().toString());
+                        lovedList = response.body().user_loved;
+                        matchedList = response.body().user_matched;
+                        setAllList();
+                        /*
+                        for(int i = 0; i < res_size; i++){
+                            User user = new User();
+                            user.setUser_id(response.body().getClass().);
+                        }
+                        */
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<Res_lm> call, Throwable t) {
+            }
+        });
+    }
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Intent intent_home = new Intent(profiles2.this, MainActivity.class);

@@ -67,6 +67,9 @@ public interface ApiService {
     @POST("matchedList2")
     Call<User> matchedList2(@Body Req_number req_number);
 
+    @POST("getlm")
+    Call<Res_lm> getlm(@Body Req_number req_number);
+
     @Multipart
     @POST("imgUpload/{userID}")
     Call<Res_img> uploadAttachment(@Part MultipartBody.Part file, @Path("userID") String userID);//@Part("description") RequestBody description);@Path("filename") String filename);//, @Part("name") RequestBody description);

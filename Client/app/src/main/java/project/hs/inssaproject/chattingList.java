@@ -233,7 +233,36 @@ public class chattingList extends AppCompatActivity {
                     finish();
                 }
             });
-
+            holder.profile_major.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    Intent intent_one_profile = new Intent(chattingList.this, chatting.class);
+                    intent_one_profile.putExtra("profile_id", tmp_id);
+                    Log.d("profile_id", holder.profile_id.getText().toString());
+                    startActivity(intent_one_profile);
+                    finish();
+                }
+            });
+            holder.profile_grade.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    Intent intent_one_profile = new Intent(chattingList.this, chatting.class);
+                    intent_one_profile.putExtra("profile_id", tmp_id);
+                    Log.d("profile_id", holder.profile_id.getText().toString());
+                    startActivity(intent_one_profile);
+                    finish();
+                }
+            });
+            holder.profile_age.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    Intent intent_one_profile = new Intent(chattingList.this, chatting.class);
+                    intent_one_profile.putExtra("profile_id", tmp_id);
+                    Log.d("profile_id", holder.profile_id.getText().toString());
+                    startActivity(intent_one_profile);
+                    finish();
+                }
+            });
             return convertView;
         }
 

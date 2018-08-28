@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,6 +35,8 @@ public class profiles extends AppCompatActivity {
     ImageButton btn_loving;
     ListView allListView = null;
     ListViewAdapter allListViewAdapter = null;
+    String matchedList;
+    String lovedList;
 
     //ImageView imgView;
     //Bitmap bm;
@@ -52,8 +55,9 @@ public class profiles extends AppCompatActivity {
         allListView = (ListView)findViewById(R.id.allListView);
         Log.d("static variable user_id", MainActivity.user_id);
 
-        setAllList();
-
+        //예외처리 해야한다
+        getLM();
+        //allListViewAdapter.dataChange();
         /*
         imgView = findViewById(R.id.imgView);
         Thread thread = new Thread(){
@@ -153,18 +157,44 @@ public class profiles extends AppCompatActivity {
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if(response.isSuccessful()){
                     if(response.body() != null) {
+                        //getLM();
                         Log.d("####response.body()###", "여길봐");
                         Log.d("response.body()", response.body().toString());
                         Log.d("response.body.size()", Integer.toString(response.body().size()));
                         List<User> users = response.body();
                         int res_size = response.body().size();
                         for(int i = 0; i < res_size; i++){
+                            boolean isGood = true;
                             if(!MainActivity.user_id.equals(users.get(i).getUser_id())) {
-                                allListViewAdapter.addItem(users.get(i).getUser_id(), users.get(i).getUser_major(), users.get(i).getUser_grade(), users.get(i).getUser_age());
-                                Log.d("getUser_id()", users.get(i).getUser_id());
-                                Log.d("getUser_major()", users.get(i).getUser_major());
-                                Log.d("getUser_age()", Integer.toString(users.get(i).getUser_age()));
-                                Log.d("getUser_grade()", Integer.toString(users.get(i).getUser_grade()));
+                                //일단 자기 자신 거르고
+                                if(lovedList != "") {
+                                    StringTokenizer recordToken1 = new StringTokenizer(lovedList, "$");
+                                    while (recordToken1.hasMoreTokens()) {
+                                        String temp_id = recordToken1.nextToken();
+                                        Log.d("token으로 temp_Id", temp_id);
+                                        if (temp_id.equals(users.get(i).getUser_id())) {
+                                            isGood = false;
+                                        }
+                                    }
+                                }
+                                if (matchedList != null) {
+                                    StringTokenizer recordToken2 = new StringTokenizer(matchedList, "$");
+                                    while(recordToken2.hasMoreTokens()){
+                                        String temp_id = recordToken2.nextToken();
+                                        Log.d("token2으로 temp_id", temp_id);
+                                        if(temp_id.equals(users.get(i).getUser_id())){
+                                            isGood = false;
+                                        }
+                                    }
+                                }
+                                if(isGood) {
+                                    allListViewAdapter.addItem(users.get(i).getUser_id(), users.get(i).getUser_major(), users.get(i).getUser_grade(), users.get(i).getUser_age());
+                                    allListViewAdapter.dataChange();
+                                    Log.d("getUser_id()", users.get(i).getUser_id());
+                                    Log.d("getUser_major()", users.get(i).getUser_major());
+                                    Log.d("getUser_age()", Integer.toString(users.get(i).getUser_age()));
+                                    Log.d("getUser_grade()", Integer.toString(users.get(i).getUser_grade()));
+                                }
                             }
                         }
                         allListView.setAdapter(allListViewAdapter);
@@ -184,7 +214,38 @@ public class profiles extends AppCompatActivity {
             }
         });
     }
+    private void getLM(){
+        Retrofit retrofit =new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(ApiService.BASEURL)
+                .build();
+        ApiService apiService = retrofit.create(ApiService.class);
+        Req_number req_number = new Req_number(MainActivity.user_id);
+        Call<Res_lm> res = apiService.getlm(req_number);
+        res.enqueue(new Callback<Res_lm>() {
+            @Override
+            public void onResponse(Call<Res_lm> call, Response<Res_lm> response) {
+                if(response.isSuccessful()){
+                    if(response.body() != null) {
+                        Log.d("response.body()", response.body().toString());
+                        lovedList = response.body().user_loved;
+                        matchedList = response.body().user_matched;
+                        setAllList();
+                        /*
+                        for(int i = 0; i < res_size; i++){
+                            User user = new User();
+                            user.setUser_id(response.body().getClass().);
+                        }
+                        */
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<Res_lm> call, Throwable t) {
+            }
+        });
+    }
     ////////
+
     private class ListViewAdapter extends BaseAdapter {
         private Context mContext = null;
         private ArrayList<profileListData> mListData = new ArrayList<profileListData>();
@@ -254,6 +315,40 @@ public class profiles extends AppCompatActivity {
                     finish();
                 }
             });
+            holder.profile_major.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    Intent intent_one_profile = new Intent(profiles.this, one_profile.class);
+                    intent_one_profile.putExtra("profile_id", tmp_id);
+                    intent_one_profile.putExtra("type", "all");
+                    Log.d("profile_id", holder.profile_id.getText().toString());
+                    startActivity(intent_one_profile);
+                    finish();
+                }
+            });
+            holder.profile_grade.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    Intent intent_one_profile = new Intent(profiles.this, one_profile.class);
+                    intent_one_profile.putExtra("profile_id", tmp_id);
+                    intent_one_profile.putExtra("type", "all");
+                    Log.d("profile_id", holder.profile_id.getText().toString());
+                    startActivity(intent_one_profile);
+                    finish();
+                }
+            });
+            holder.profile_age.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    Intent intent_one_profile = new Intent(profiles.this, one_profile.class);
+                    intent_one_profile.putExtra("profile_id", tmp_id);
+                    intent_one_profile.putExtra("type", "all");
+                    Log.d("profile_id", holder.profile_id.getText().toString());
+                    startActivity(intent_one_profile);
+                    finish();
+                }
+            });
+
 
             return convertView;
         }
@@ -279,11 +374,11 @@ public class profiles extends AppCompatActivity {
                 dataChange();
             }
             */
-            /*
+
         public void dataChange() {
             allListViewAdapter.notifyDataSetChanged();
         }
-        */
+
     }
 
     ////////
